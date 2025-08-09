@@ -1,7 +1,8 @@
 import type { Request, Response, NextFunction } from 'express';
-import { createLogger } from '../utils/logger.js';
+import { logger } from '../utils/logger.js';
 
-const logger = createLogger('/errorHandler');
+
+const errorLogger = logger.child({ service: 'error-handler' });
 
 export interface AppError extends Error {
   status?: number;
@@ -13,7 +14,7 @@ export const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  logger.error(`[${req.method} ${req.url}] ${err.message}\n${err.stack}`);
+  errorLogger.error(`[${req.method} ${req.url}] ${err.message}\n${err.stack}`);
 
   res.status(err.status || 500).json({
     message: err.message || 'Internal Server Error',
