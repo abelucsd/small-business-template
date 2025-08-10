@@ -1,0 +1,12 @@
+Category:
+  type: object
+  required:
+    - id
+    - name
+  properties:
+    id:
+      type: string
+      description: The unique identifier of the category.
+    name:
+      type: string
+      description: The name of the category.
