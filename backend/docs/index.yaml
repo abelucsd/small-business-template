@@ -1,0 +1,5 @@
+openapi: 3.0.4
+info:
+  title: Demo Template API for a Business
+  description: An API for a business.
+  version: 1.0.0
