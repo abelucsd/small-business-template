@@ -1,0 +1,12 @@
+Customer:
+  type: object
+  required:
+    - id
+    - user
+  properties:
+    id:
+      type: string
+      description: Unique customer ID.
+    userId:
+      type: string
+      description: Customer's user ID.

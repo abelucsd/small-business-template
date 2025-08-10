@@ -1,0 +1,24 @@
+User:
+  type: object
+  required:
+    - id
+    - firstname
+    - lastname
+    - email
+    - password
+  properties:
+    id:
+      type: string
+      description: The unique identifier for the user.
+    firstname:
+      type: string
+      description: The user's first name.
+    lastname:
+      type: string
+      description: The user's last name.
+    email:
+      type: string
+      description: The user's email.
+    password:
+      type: string
+      description: The user's password.
