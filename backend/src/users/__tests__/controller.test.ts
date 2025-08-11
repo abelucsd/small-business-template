@@ -1,7 +1,6 @@
 import type { Request, Response, NextFunction} from 'express';
 import { describe, it, expect, vi, beforeAll, beforeEach } from 'vitest';
-import type { CreateUser, IUser } from '../model.js';
-import { User } from '../model.js';
+import type { IUser } from '../model.js';
 import * as userController from '../controller.js';
 import * as userService from '../service.js';
 
