@@ -18,10 +18,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Build Docker image
-        run: docker build -t backend .
+      - name: Run Docker build stage
+        run: docker build --target build -t backend-build .
         working-directory: ./backend
 
       - name: Run tests in container
-        run: docker run --rm backend npm test
+        run: docker run --rm backend-build npm test
+        working-directory: ./backend
+
+      - name: Run Docker prod stage
+        run: docker build --target prod -t backend-prod .
         working-directory: ./backend
