@@ -1,18 +1,18 @@
 import type { Request, Response, NextFunction } from 'express';
 import * as userService from './service.js';
-import { logger } from '../utils/logger.js';
+import { appLogger } from '../utils/logger.js';
 
-const userLogger = logger.child({ service: 'user-controller' });
+const logger = appLogger.child({ service: 'user-controller' });
 
 
 export const createUser = async( req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    userLogger.info('[createUser] Received request to create a new User.');
+    logger.info('[createUser] Received request to create a new User.');
 
     const { firstname, lastname, email, password } = req.body;
     const newUser = await userService.createUser({ firstname, lastname, email, password });
 
-    userLogger.info(`[createProduct] Successfully created User with ID: ${newUser._id}`);
+    logger.info(`[createProduct] Successfully created User with ID: ${newUser._id}`);
     res.status(201).json(newUser);
   } catch (error) {    
     next(error);
@@ -21,11 +21,11 @@ export const createUser = async( req: Request, res: Response, next: NextFunction
 
 export const getUsers = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    userLogger.info('[getUsers] Received request to get all User.');
+    logger.info('[getUsers] Received request to get all User.');
     
     const users = await userService.getUsers();
 
-    userLogger.info(`[getUser] Successfully fetched User(s).`);
+    logger.info(`[getUser] Successfully fetched User(s).`);
     res.status(200).json(users);
   } catch (error) {        
     next(error);

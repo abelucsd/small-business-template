@@ -2,18 +2,18 @@ import type { CreateUser, IUser } from "./model.js";
 import { User } from "./model.js";
 import { getNextId } from "../shared/counter.model.js";
 import { CustomError } from "../shared/CustomError.js";
-import { logger } from "../utils/logger.js";
+import { appLogger } from "../utils/logger.js";
 
 
-const userLogger = logger.child({ service: 'user' });
+const logger = appLogger.child({ service: 'user' });
 
 export const createUser = async (userData: CreateUser): Promise<IUser> => {
   try {    
     const nextId = await getNextId('user');
     const newUser = {...userData, id: `user-${nextId}`};
-    userLogger.info(`[createUser] Creating user ${newUser.id}`);
+    logger.info(`[createUser] Creating user ${newUser.id}`);
     const user = await User.create(newUser);
-    userLogger.info(`[createUser] Created user ${newUser.id}`);
+    logger.info(`[createUser] Created user ${newUser.id}`);
     return user;
   } catch (error) {    
     const err = new CustomError('Failed to create user', 400);    
