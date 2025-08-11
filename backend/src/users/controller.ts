@@ -9,8 +9,8 @@ export const createUser = async( req: Request, res: Response, next: NextFunction
   try {
     userLogger.info('[createUser] Received request to create a new User.');
 
-    const { id, firstname, lastname, email, password } = req.body;
-    const newUser = await userService.createUser({ id, firstname, lastname, email, password });
+    const { firstname, lastname, email, password } = req.body;
+    const newUser = await userService.createUser({ firstname, lastname, email, password });
 
     userLogger.info(`[createProduct] Successfully created User with ID: ${newUser._id}`);
     res.status(201).json(newUser);
@@ -29,7 +29,7 @@ export const getUsers = async (req: Request, res: Response, next: NextFunction):
     res.status(200).json(users);
   } catch (error) {        
     next(error);
-  }  
+  }
 };
 
 export const getUserById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -63,12 +63,12 @@ export const updateUser = async (req: Request, res: Response, next: NextFunction
 export const deleteUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const userId = req.params.id as string;
-    const deleted = await userService.deleteUser(userId);
-    if (!deleted) {
+    const deletedUser = await userService.deleteUser(userId);
+    if (deletedUser == null) {
       res.status(404).json({ message: 'User not found' });
     }    
 
-    res.status(200).json(`Deleted user with ID ${userId}`);
+    res.status(200).json(`Deleted user with ID ${deletedUser!._id}`);
   } catch (error) {
     next(error);
   }

@@ -72,7 +72,7 @@ describe('User Controller', () => {
     it('should return 200', async () => {
       const newUser = testIUsers[0]!;
       req.params = {
-        id: newUser.id
+        _id: newUser._id
       };
       const res = mockResponse();
       vi.spyOn(userService, 'getUserById').mockResolvedValue(newUser);
@@ -85,7 +85,7 @@ describe('User Controller', () => {
     it('should return 404', async () => {
       const newUser = testIUsers[0]!;
       req.params = {
-        id: newUser.id
+        _id: newUser._id
       };
       const res = mockResponse();
       vi.spyOn(userService, 'getUserById').mockResolvedValue(null);
@@ -102,7 +102,7 @@ describe('User Controller', () => {
       const updatedUser = { ...newUser, firstname: 'Foo3' };
       const res = mockResponse();   
       req.params = {
-        id: newUser.id
+        _id: newUser._id
       };
       req.body = newUser;
       vi.spyOn(userService, 'updateUser').mockResolvedValue(updatedUser);
@@ -117,7 +117,7 @@ describe('User Controller', () => {
       const updatedUser = { ...newUser, firstname: 'Foo3' };
       const res = mockResponse();   
       req.params = {
-        id: newUser.id
+        _id: newUser._id
       };
       req.body = newUser;
       vi.spyOn(userService, 'updateUser').mockResolvedValue(null);
@@ -132,24 +132,24 @@ describe('User Controller', () => {
     it('should return 200', async () => {
       const newUser = testIUsers[0]!;
       req.params = {
-        id: newUser.id
+        _id: newUser._id
       };
       const res = mockResponse();
-      vi.spyOn(userService, 'deleteUser').mockResolvedValue(true);
+      vi.spyOn(userService, 'deleteUser').mockResolvedValue(newUser);
 
       await userController.deleteUser(req, res, next);
 
       expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith(`Deleted user with ID ${newUser.id}`);
+      expect(res.json).toHaveBeenCalledWith(`Deleted user with ID ${newUser._id}`);
     });
     it('should return 404', async () => {
       const newUser = testIUsers[0]!;
       req.params = {
-        id: newUser.id
+        _id: newUser._id
       };
       const res = mockResponse();
 
-      vi.spyOn(userService, 'deleteUser').mockResolvedValue(false);
+      vi.spyOn(userService, 'deleteUser').mockResolvedValue(null);
 
       await userController.deleteUser(req, res, next);
       expect(res.status).toHaveBeenCalledWith(404);      

@@ -1,12 +1,14 @@
 import { describe, it, expect, vi, beforeAll } from 'vitest';
-import type { CreateUser } from '../model.js';
+import type { CreateUser, IUser } from '../model.js';
 import { User } from '../model.js';
 import * as userService from '../service.js';
+import * as counterService from '../../shared/counter.model.js';
 
 
 describe('User Service', () => {
-  const testUsers: CreateUser[] = [
+  const testUsers: IUser[] = [
     {
+      _id: '1',
       id: 'user-01',
       firstname: 'Foo1',
       lastname: 'Bar1',
@@ -14,6 +16,7 @@ describe('User Service', () => {
       password: 'properTestPass@1'
     }, 
     {
+      _id: '2',
       id: 'user-02',
       firstname: 'Foo2',
       lastname: 'Bar2',
@@ -29,7 +32,10 @@ describe('User Service', () => {
   describe('Create User', () => {
     it('Should create a new user', async () => {      
       const newUser: CreateUser = testUsers[0]!;
-      User.create = vi.fn().mockResolvedValue(newUser);      
+
+      vi.spyOn(counterService, 'getNextId').mockResolvedValue(1);
+
+      User.create = vi.fn().mockResolvedValue(newUser);
 
       const user = await userService.createUser(newUser);      
 
@@ -40,7 +46,7 @@ describe('User Service', () => {
 
   describe('Get Users', () => {
     it('Should return all the users', async () => {
-      const newUsers: CreateUser[] = testUsers;
+      const newUsers: IUser[] = testUsers;
       User.find = vi.fn().mockResolvedValue(newUsers);
 
       const users = await userService.getUsers();
@@ -51,10 +57,10 @@ describe('User Service', () => {
 
   describe('Get User by ID', () => {
     it('Should return a user by ID', async () => {
-      const newUser: CreateUser = testUsers[0]!;
+      const newUser: IUser = testUsers[0]!;
       User.findOne = vi.fn().mockResolvedValue(newUser);      
 
-      const user = await userService.getUserById(newUser.id);
+      const user = await userService.getUserById(newUser._id);
 
       expect(user).toBe(newUser);
     });
@@ -62,11 +68,11 @@ describe('User Service', () => {
 
   describe('Update User by ID', () => {
     it('Should update a user by ID', async () => {
-      const newUser: CreateUser = testUsers[0]!;
-      const updatedUser: CreateUser = { ...newUser, firstname: 'Foo3' };
+      const newUser: IUser = testUsers[0]!;
+      const updatedUser: IUser = { ...newUser, firstname: 'Foo3' };
       User.findOneAndUpdate = vi.fn().mockResolvedValue(updatedUser);      
 
-      const user = await userService.updateUser(updatedUser.id, updatedUser);
+      const user = await userService.updateUser(updatedUser._id, updatedUser);
 
       expect(user).toBe(updatedUser);
     })
@@ -74,11 +80,11 @@ describe('User Service', () => {
 
   describe('Delete User by ID', () => {
     it('Should delete a user by ID', async () => {
-      const newUser: CreateUser = testUsers[0]!;
-      User.deleteOne = vi.fn().mockResolvedValue({acknowledged: true, deletedCount: 1});
+      const newUser: IUser = testUsers[0]!;
+      User.findByIdAndDelete = vi.fn().mockResolvedValue(newUser);
       
-      const deleted = await userService.deleteUser(newUser.id);
-      expect(deleted).toBe(true);
+      const deleted = await userService.deleteUser(newUser._id);
+      expect(deleted).toBe(newUser);
     });
   });
 });

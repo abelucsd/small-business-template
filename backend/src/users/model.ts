@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
-export interface CreateUser {
-  id: string;
+export interface CreateUser {  
+  id?: string;
   firstname: string;
   lastname: string;
   password: string;
