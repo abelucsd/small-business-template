@@ -3,5 +3,6 @@ services:
     build:
       context: .
       target: production
+    image: backend-prod/api:1.0
     ports:
       - 4000:4000
