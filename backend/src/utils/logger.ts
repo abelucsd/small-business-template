@@ -12,8 +12,7 @@ const errorFilePath = path.join(logDir, 'error.log');
 
 export const logger = winston.createLogger({
   level: 'info',
-  format: winston.format.json(),
-  defaultMeta: { service: 'user-service' },
+  format: winston.format.json(),  
   transports: [
     new winston.transports.Console(),    
     new winston.transports.File({ filename: logFilePath}),
