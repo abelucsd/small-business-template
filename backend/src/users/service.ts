@@ -9,7 +9,7 @@ const userLogger = logger.child({ service: 'user' });
 
 export const createUser = async (userData: CreateUser): Promise<IUser> => {
   try {    
-    const nextId = await getNextId('user');    
+    const nextId = await getNextId('user');
     const newUser = {...userData, id: `user-${nextId}`};
     userLogger.info(`[createUser] Creating user ${newUser.id}`);
     const user = await User.create(newUser);
