@@ -27,5 +27,5 @@ jobs:
         working-directory: ./backend
 
       - name: Run Docker prod stage
-        run: docker build --target prod -t backend-prod .
+        run: docker build --target production -t backend-prod .
         working-directory: ./backend
