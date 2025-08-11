@@ -3,7 +3,7 @@ FROM node:22-alpine AS build
 
 WORKDIR /app
 
-COPY package*.json .
+COPY package*.json package-lock.json ./
 
 RUN npm install
 
@@ -16,10 +16,12 @@ FROM node:22-alpine AS production
 
 WORKDIR /app
 
-COPY package*.json .
+COPY package*.json package-lock.json ./
 
 RUN npm ci --only=production
 
 COPY --from=build /app/dist ./dist
+
+COPY --from=build /app/docs ./docs
 
 CMD ["node", "dist/server.js"]
