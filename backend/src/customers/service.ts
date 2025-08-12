@@ -3,17 +3,18 @@ import { Customer } from "./model.js";
 import { getNextId } from "../shared/counter.model.js";
 import { CustomError } from "../shared/CustomError.js";
 import { appLogger } from "../utils/logger.js";
-import { createUser } from '../users/service.js';
-import type { CreateUser } from "../users/model.js";
+import * as userService from '../users/service.js';
+import type { CreateUser, IUser } from "../users/model.js";
+import type { Types } from "mongoose";
 
 
 const logger = appLogger.child({ service: 'customer' });
 
-export const createCustomer = async (customerData: CreateUser): Promise<ICustomer> => {
+export const createCustomer = async (customerData: CreateCustomer): Promise<ICustomer> => {
   try {    
-    const newUser = await createUser(customerData);
+    // const newUser = await userService.createUser(customerData);
     const nextId = await getNextId('Customer');
-    const newCustomer = {id: `customer-${nextId}`, userId: newUser._id};
+    const newCustomer = { ...customerData, id: `customer-${nextId}`};
     logger.info(`[createCustomer] Creating Customer ${newCustomer.id}`);
     const customer = await Customer.create(newCustomer);
     logger.info(`[createCustomer] Created Customer ${newCustomer.id}`);
@@ -24,30 +25,30 @@ export const createCustomer = async (customerData: CreateUser): Promise<ICustome
   }
 };
 
-export const getCustomers = async (): Promise<ICustomer[]> => {
+export const getCustomers = async (): Promise<(ICustomer & { userId: IUser })[]> => {
   try {
     logger.info(`[getCustomers] Returning Customer(s).`);
-    return await Customer.find({});
+    return await Customer.find({}).populate('userId').lean();
   } catch (error) {
     const err = new CustomError('Failed to fetch Customers', 500);
     throw err;
-  } 
+  }
 };
 
-export const getCustomerById = async (_id: string): Promise<ICustomer | null> => {
+export const getCustomerById = async (_id: Types.ObjectId): Promise<ICustomer | null> => {
   try {
     logger.info(`[getCustomerById] Fetching Customer with ID: ${_id}`);    
-    return await Customer.findById(_id);
+    return await Customer.findById(_id).populate('userId');
   } catch (error) {
     const err = new CustomError('Failed to fetch customer by ID', 404);      
     throw err;
   }
 };
 
-export const updateCustomer = async (_id: string, CustomerData: Partial<CreateCustomer>): Promise<ICustomer | null> => {
+export const updateCustomer = async (_id: Types.ObjectId, customerData: Partial<CreateCustomer>): Promise<ICustomer | null> => {
   try {
     logger.info(`[updateCustomer] Updating Customer with ID: ${_id}`);
-    const customer = await Customer.findByIdAndUpdate({_id}, {$set: CustomerData}, {new: true});    
+    const customer = await Customer.findByIdAndUpdate({_id}, {$set: customerData}, {new: true});
     logger.info(`[updateCustomer] Updated Customer with ID: ${_id}`);
     return customer;
   } catch (error) {
@@ -56,7 +57,7 @@ export const updateCustomer = async (_id: string, CustomerData: Partial<CreateCu
   }
 };
 
-export const deleteCustomer = async (_id: string): Promise<ICustomer | null> => {
+export const deleteCustomer = async (_id: Types.ObjectId): Promise<ICustomer | null> => {
   try {
     logger.info(`[deleteCustomer] Delete Customer with ID: ${_id}`);
     const result = await Customer.findByIdAndDelete(_id);    

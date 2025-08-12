@@ -3,11 +3,12 @@ import { describe, it, expect, vi, beforeAll, beforeEach } from 'vitest';
 import type { IUser } from '../model.js';
 import * as userController from '../controller.js';
 import * as userService from '../service.js';
+import { Types } from 'mongoose';
 
 describe('User Controller', () => {
   const testIUsers: IUser[] = [
     {
-      _id: '1',
+      _id: new Types.ObjectId('64f7f6d4e0f1b2a3c4d5e6f7'),
       id: 'user-01',
       firstname: 'Foo1',
       lastname: 'Bar1',
@@ -15,7 +16,7 @@ describe('User Controller', () => {
       password: 'properTestPass@1'
     }, 
     {
-      _id: '2',
+      _id: new Types.ObjectId('64f7f6d4e0f1b2a3c4d5e6f2'),
       id: 'user-02',
       firstname: 'Foo2',
       lastname: 'Bar2',
@@ -72,7 +73,7 @@ describe('User Controller', () => {
     it('should return 200', async () => {
       const newUser = testIUsers[0]!;
       req.params = {
-        _id: newUser._id
+        id: newUser._id.toString()
       };
       const res = mockResponse();
       vi.spyOn(userService, 'getUserById').mockResolvedValue(newUser);
@@ -85,7 +86,7 @@ describe('User Controller', () => {
     it('should return 404', async () => {
       const newUser = testIUsers[0]!;
       req.params = {
-        _id: newUser._id
+        id: newUser._id.toString()
       };
       const res = mockResponse();
       vi.spyOn(userService, 'getUserById').mockResolvedValue(null);
@@ -102,7 +103,7 @@ describe('User Controller', () => {
       const updatedUser = { ...newUser, firstname: 'Foo3' };
       const res = mockResponse();   
       req.params = {
-        _id: newUser._id
+        id: newUser._id.toString()
       };
       req.body = newUser;
       vi.spyOn(userService, 'updateUser').mockResolvedValue(updatedUser);
@@ -117,7 +118,7 @@ describe('User Controller', () => {
       const updatedUser = { ...newUser, firstname: 'Foo3' };
       const res = mockResponse();   
       req.params = {
-        _id: newUser._id
+        id: newUser._id.toString()
       };
       req.body = newUser;
       vi.spyOn(userService, 'updateUser').mockResolvedValue(null);
@@ -132,7 +133,7 @@ describe('User Controller', () => {
     it('should return 200', async () => {
       const newUser = testIUsers[0]!;
       req.params = {
-        _id: newUser._id
+        id: newUser._id.toString()
       };
       const res = mockResponse();
       vi.spyOn(userService, 'deleteUser').mockResolvedValue(newUser);
@@ -145,7 +146,7 @@ describe('User Controller', () => {
     it('should return 404', async () => {
       const newUser = testIUsers[0]!;
       req.params = {
-        _id: newUser._id
+        id: newUser._id.toString()
       };
       const res = mockResponse();
 
