@@ -13,6 +13,8 @@ export const createCustomer = async( req: Request, res: Response, next: NextFunc
 
     const { firstname, lastname, email, password } = req.body;
 
+    console.log("creating customer...")
+
     // get or create user.
     let user = await userService.getUserByEmail(email);    
     if (!user) {
@@ -20,6 +22,7 @@ export const createCustomer = async( req: Request, res: Response, next: NextFunc
       user = await userService.createUser({ firstname, lastname, email, password });
     }
     
+    console.log("createCustomer service layer...")
     const newCustomer = await customerService.createCustomer({userId: user._id});
 
     logger.info(`[createProduct] Successfully created Customer with ID: ${newCustomer._id}`);

@@ -28,6 +28,7 @@ describe('User Service', () => {
 
   beforeAll(() => {
     vi.clearAllMocks();
+    vi.resetModules()
   });
 
   describe('Create User', () => {
@@ -48,7 +49,7 @@ describe('User Service', () => {
   describe('Get Users', () => {
     it('Should return all the users', async () => {
       const newUsers: IUser[] = testUsers;
-      User.find = vi.fn().mockResolvedValue(newUsers);
+      User.find = vi.fn().mockResolvedValue(newUsers);      
 
       const users = await userService.getUsers();
 

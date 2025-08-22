@@ -25,22 +25,27 @@ export const createCustomer = async (customerData: CreateCustomer): Promise<ICus
   }
 };
 
-export const getCustomers = async (): Promise<(ICustomer & { userId: IUser })[]> => {
+export const getCustomers = async (): Promise<ICustomer[]> => {
   try {
     logger.info(`[getCustomers] Returning Customer(s).`);
-    return await Customer.find({}).populate('userId').lean();
+    console.log("JKASL;DDJF;KLAQSDJDFK;LJASDF")
+    const res = await Customer.find({}).populate('userId');        
+    console.log('ASJD;FKLJAS;LKDFJ')
+    console.log(res)
+    return res
   } catch (error) {
-    const err = new CustomError('Failed to fetch Customers', 500);
+    console.log(error)
+    const err = new CustomError(`Failed to fetch Customers: ${error}`, 500);
     throw err;
   }
 };
 
 export const getCustomerById = async (_id: Types.ObjectId): Promise<ICustomer | null> => {
   try {
-    logger.info(`[getCustomerById] Fetching Customer with ID: ${_id}`);    
+    logger.info(`[getCustomerById] Fetching Customer with ID: ${_id}`);
     return await Customer.findById(_id).populate('userId');
   } catch (error) {
-    const err = new CustomError('Failed to fetch customer by ID', 404);      
+    const err = new CustomError(`Failed to fetch customer by ID: ${error}`, 404);      
     throw err;
   }
 };
