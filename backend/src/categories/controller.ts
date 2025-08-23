@@ -21,7 +21,7 @@ export const createCategory = async( req: Request, res: Response, next: NextFunc
   }
 };
 
-export const getCategorys = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const getCategories = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     logger.info('[getCategorys] Received request to get all Category.');
     
