@@ -44,7 +44,9 @@ export const getCategoryById = async (_id: Types.ObjectId): Promise<ICategory | 
 
 export const getCategoryByName = async (name: string): Promise<ICategory | null> => {
   try {
-
+    logger.info(`[getCategoryByName] Fetching Category by name: ${name}`);
+    const result = await repository.getCategoryByName(name);
+    return result;
   } catch (error) {
     const err = new CustomError('Failed to fetch category by name', 404);
     throw err;

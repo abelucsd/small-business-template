@@ -16,12 +16,14 @@ export const createProduct = async( req: Request, res: Response, next: NextFunct
     // Check if category exists.
     const categoryObject = await getCategoryByName(name);
     if (!categoryObject) {
+      console.log(`MISSING CATEGORY OBJECT`)
       res.status(404).json({ message:'Category not found' });      
     }
 
     const categoryId = categoryObject!._id;
     // likely never to run
     if (!categoryId) {
+      console.log(`MISSING CATEGORY OBJECT ID`)
       res.status(404).json({ message:'Category contains missing field: id' });
     }
     
@@ -56,12 +58,12 @@ export const getProductById = async (req: Request, res: Response, next: NextFunc
     }
     const _id: Types.ObjectId = new Types.ObjectId(id);
 
-    const Product = await productService.getProductById(_id);
-    if (!Product) {
+    const product = await productService.getProductById(_id);
+    if (!product) {
       res.status(404).json({ message: 'Product not found' });
     }
 
-    res.status(200).json(Product);
+    res.status(200).json(product);
   } catch (error) {
     next(error);
   }
