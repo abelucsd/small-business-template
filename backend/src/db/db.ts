@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 import { MongoClient, Db, ServerApiVersion } from "mongodb";
 import { config } from "../config/config.js";
-import { logger } from "../utils/logger.js";
+import { appLogger } from "../utils/logger.js";
 
-const dbLogger = logger.child({ service: 'db-service' });
+const logger = appLogger.child({ service: 'db-service' });
 
 
 export const getDb = async (): Promise<Db | undefined> => {
@@ -16,7 +16,7 @@ export const getDb = async (): Promise<Db | undefined> => {
     config.db.mongodbUri
   )
 
-  dbLogger.info(`[getDB] Connected to database: ${mongoose.connection.db?.databaseName}`);  
+  logger.info(`[getDB] Connected to database: ${mongoose.connection.db?.databaseName}`);  
 
   
   return mongoose.connection.db;  

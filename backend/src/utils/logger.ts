@@ -10,7 +10,7 @@ if (!fs.existsSync(logDir)) {
 const logFilePath = path.join(logDir, 'combined.log');
 const errorFilePath = path.join(logDir, 'error.log');
 
-export const logger = winston.createLogger({
+export const appLogger = winston.createLogger({
   level: 'info',
   format: winston.format.json(),  
   transports: [

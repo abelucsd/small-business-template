@@ -50,4 +50,4 @@ export async function flushIds(modelName: string): Promise<boolean> {
 
 const modelCommandMap: {[key: string]: mongoose.Model<IUser> | undefined } = {
   User,
-}
+};

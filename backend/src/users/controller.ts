@@ -1,18 +1,19 @@
 import type { Request, Response, NextFunction } from 'express';
 import * as userService from './service.js';
-import { logger } from '../utils/logger.js';
+import { appLogger } from '../utils/logger.js';
+import { Types } from 'mongoose';
 
-const userLogger = logger.child({ service: 'user-controller' });
+const logger = appLogger.child({ service: 'user-controller' });
 
 
 export const createUser = async( req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    userLogger.info('[createUser] Received request to create a new User.');
+    logger.info('[createUser] Received request to create a new User.');
 
     const { firstname, lastname, email, password } = req.body;
     const newUser = await userService.createUser({ firstname, lastname, email, password });
 
-    userLogger.info(`[createProduct] Successfully created User with ID: ${newUser._id}`);
+    logger.info(`[createProduct] Successfully created User with ID: ${newUser._id}`);
     res.status(201).json(newUser);
   } catch (error) {    
     next(error);
@@ -21,11 +22,11 @@ export const createUser = async( req: Request, res: Response, next: NextFunction
 
 export const getUsers = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    userLogger.info('[getUsers] Received request to get all User.');
+    logger.info('[getUsers] Received request to get all User.');
     
     const users = await userService.getUsers();
 
-    userLogger.info(`[getUser] Successfully fetched User(s).`);
+    logger.info(`[getUser] Successfully fetched User(s).`);
     res.status(200).json(users);
   } catch (error) {        
     next(error);
@@ -34,8 +35,14 @@ export const getUsers = async (req: Request, res: Response, next: NextFunction):
 
 export const getUserById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const userId = req.params.id as string;
-    const user = await userService.getUserById(userId);
+    const id = req.params.id;
+    if (id == null || !Types.ObjectId.isValid(id)) {
+      res.status(400).send('Invalid user ID');
+      return;
+    }
+    const _id: Types.ObjectId = new Types.ObjectId(id);
+
+    const user = await userService.getUserById(_id);
     if (!user) {
       res.status(404).json({ message: 'User not found' });
     }
@@ -48,8 +55,13 @@ export const getUserById = async (req: Request, res: Response, next: NextFunctio
 
 export const updateUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const userId = req.params.id as string;
-    const updatedUser = await userService.updateUser(userId, req.body);
+    const id = req.params.id;
+    if (id == null || !Types.ObjectId.isValid(id)) {
+      res.status(400).send('Invalid user ID');
+      return;
+    }
+    const _id: Types.ObjectId = new Types.ObjectId(id);
+    const updatedUser = await userService.updateUser(_id, req.body);
     if (!updatedUser) {
       res.status(404).json({ message: 'User not found' });
     }    
@@ -62,8 +74,13 @@ export const updateUser = async (req: Request, res: Response, next: NextFunction
 
 export const deleteUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const userId = req.params.id as string;
-    const deletedUser = await userService.deleteUser(userId);
+    const id = req.params.id;
+    if (id == null || !Types.ObjectId.isValid(id)) {
+      res.status(400).send('Invalid user ID');
+      return;
+    }
+    const _id: Types.ObjectId = new Types.ObjectId(id);
+    const deletedUser = await userService.deleteUser(_id);
     if (deletedUser == null) {
       res.status(404).json({ message: 'User not found' });
     }    
