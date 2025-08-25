@@ -3,12 +3,13 @@ import type { CreateUser, IUser } from '../model.js';
 import { User } from '../model.js';
 import * as userService from '../service.js';
 import * as counterService from '../../shared/counter.model.js';
+import { ObjectId, Types } from 'mongoose';
 
 
 describe('User Service', () => {
   const testUsers: IUser[] = [
     {
-      _id: '1',
+      _id: new Types.ObjectId('64f7f6d4e0f1b2a3c4d5e6f7'),
       id: 'user-01',
       firstname: 'Foo1',
       lastname: 'Bar1',
@@ -16,7 +17,7 @@ describe('User Service', () => {
       password: 'properTestPass@1'
     }, 
     {
-      _id: '2',
+      _id: new Types.ObjectId('64f7f6d4e0f1b2a3c4d5e6f2'),
       id: 'user-02',
       firstname: 'Foo2',
       lastname: 'Bar2',
@@ -27,6 +28,7 @@ describe('User Service', () => {
 
   beforeAll(() => {
     vi.clearAllMocks();
+    vi.resetModules()
   });
 
   describe('Create User', () => {
@@ -47,7 +49,7 @@ describe('User Service', () => {
   describe('Get Users', () => {
     it('Should return all the users', async () => {
       const newUsers: IUser[] = testUsers;
-      User.find = vi.fn().mockResolvedValue(newUsers);
+      User.find = vi.fn().mockResolvedValue(newUsers);      
 
       const users = await userService.getUsers();
 
