@@ -11,13 +11,20 @@ const logger = appLogger.child({ service: 'product' });
 export const createProduct = async (productData: CreateProduct): Promise<IProduct> => {
   try {    
     const nextId = await getNextId('Product');
-    const newProduct = {...productData, id: `Product-${nextId}`};
+    let newProduct = null;
+    if (productData?.id == null) {      
+      newProduct = {...productData, id: `Product-${nextId}`};
+    }
+    else {
+      newProduct = {...productData}
+    }
+    
     logger.info(`[createProduct] Creating Product ${newProduct.id}`);    
     const product = await repository.createProduct(newProduct);
     logger.info(`[createProduct] Created Product ${newProduct.id}`);
     return product;
   } catch (error) {    
-    const err = new CustomError('Failed to create Product', 400);    
+    const err = new CustomError(`Failed to create Product; ${error} `, 400);    
     throw err;
   }
 };

@@ -6,6 +6,11 @@ export interface CreateProduct {
   name: string;
   categoryId: Types.ObjectId;
   price: number;
+  salePrice?: number;
+  cost?: number;
+  description?: string;
+  src?: string;
+  alt?: string;
   attributes: Record<string, unknown>;
 };
 
@@ -17,7 +22,12 @@ const productSchema = new Schema<IProduct>({
   id: { type: String, required: true, unique: true},
   name: { type: String, required: true },
   price: { type: Number, required: true },
-  categoryId: { type: Schema.Types.ObjectId, required: true, unique: true, ref: 'Category'},
+  salePrice: { type: Number, required: false },
+  cost: { type: Number, required: false },
+  description: { type: String, required: false },
+  src: { type: String, required: false },
+  alt: { type: String, required: false },
+  categoryId: { type: Schema.Types.ObjectId, required: true, ref: 'Category'},
   attributes: { type: Map, of: Schema.Types.Mixed, default: {} }
 });
 

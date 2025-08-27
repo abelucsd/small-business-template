@@ -11,10 +11,10 @@ export const createProduct = async( req: Request, res: Response, next: NextFunct
   try {
     logger.info('[createProduct] Received request to create a new Product.');
 
-    const { name, price, category, attributes } = req.body;
+    const { name, price, salePrice, cost, description, category, attributes } = req.body;
 
     // Check if category exists.
-    const categoryObject = await getCategoryByName(name);
+    const categoryObject = await getCategoryByName(category);
     if (!categoryObject) {
       console.log(`MISSING CATEGORY OBJECT`)
       res.status(404).json({ message:'Category not found' });      
@@ -27,7 +27,7 @@ export const createProduct = async( req: Request, res: Response, next: NextFunct
       res.status(404).json({ message:'Category contains missing field: id' });
     }
     
-    const newProduct = await productService.createProduct({ name, price, categoryId, attributes });
+    const newProduct = await productService.createProduct({ name, price, salePrice, cost, description, categoryId, attributes });
 
     logger.info(`[createProduct] Successfully created Product with ID: ${newProduct._id}`);
     res.status(201).json(newProduct);
