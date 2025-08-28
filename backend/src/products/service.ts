@@ -3,8 +3,11 @@ import { Product } from "./model.js";
 import { getNextId } from "../shared/counter.model.js";
 import { CustomError } from "../shared/CustomError.js";
 import { appLogger } from "../utils/logger.js";
-import type { Types } from "mongoose";
+import type { FilterQuery, Types } from "mongoose";
 import * as repository from "./repository.js"
+import * as categoryService from '../categories/service.js'
+import type { ICategory } from "../categories/model.js";
+import type { ProductResponse } from "./types.js";
 
 const logger = appLogger.child({ service: 'product' });
 
@@ -29,15 +32,38 @@ export const createProduct = async (productData: CreateProduct): Promise<IProduc
   }
 };
 
-export const getProducts = async (): Promise<IProduct[]> => {
+export const getProducts = async (category?: string): Promise<ProductResponse[]> => {
   try {
     logger.info(`[getProducts] Returning Product(s).`);
-    return await repository.getProducts();
+    let categoryId: Types.ObjectId | undefined;
+
+    let categoryObject: ICategory | undefined;
+    if (category) {
+      logger.info(`[getProducts] Product category ${category}.`)
+      const categoryObject = await categoryService.getCategoryByName(category);
+      
+      if(!categoryObject) throw new Error("Category not found");      
+      categoryId = categoryObject._id;
+    }
+    const query: FilterQuery<IProduct> = {};
+    if (categoryId) query.categoryId = categoryId;
+
+    return await repository.getProducts(query);
   } catch (error) {
-    const err = new CustomError('Failed to fetch Products', 500);
+    const err = new CustomError(`Failed to fetch Products ${error}`, 500);
     throw err;
   } 
 };
+
+export const getFeaturedProducts = async (): Promise<IProduct[]> => {
+  try {
+    logger.info(`[getProducts] Returning featured product(s).`)
+    return await repository.getFeaturedProducts();
+  } catch (error) {
+    const err = new CustomError(`Failed to fetch featured products ${error}`, 500);
+    throw err;
+  }
+}
 
 export const getProductById = async (_id: Types.ObjectId): Promise<IProduct | null> => {
   try {

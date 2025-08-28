@@ -11,6 +11,7 @@ export interface CreateProduct {
   description?: string;
   src?: string;
   alt?: string;
+  isFeatured?: boolean;
   attributes: Record<string, unknown>;
 };
 
@@ -28,6 +29,7 @@ const productSchema = new Schema<IProduct>({
   src: { type: String, required: false },
   alt: { type: String, required: false },
   categoryId: { type: Schema.Types.ObjectId, required: true, ref: 'Category'},
+  isFeatured: { type: Boolean, default: false},
   attributes: { type: Map, of: Schema.Types.Mixed, default: {} }
 });
 
