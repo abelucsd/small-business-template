@@ -41,15 +41,16 @@ export const getProducts = async (req: Request, res: Response, next: NextFunctio
     logger.info('[getProducts] Received request to get all Product.');
 
     const category = req.query?.category as string | undefined;
+    const search = req.query?.search as string | undefined;
+    const page = parseInt(req.query?.page as string ?? '1');
+    const limit = parseInt(req.query?.limit as string ?? '10');
 
     console.log(category)
     
-    const products = await productService.getProducts(category);
-
-    
+    const { products, total } = await productService.getProducts(category, search, page, limit);    
 
     logger.info(`[getProduct] Successfully fetched Product(s).`);
-    res.status(200).json(products);
+    res.status(200).json({ products, total });
   } catch (error) {        
     next(error);
   }
