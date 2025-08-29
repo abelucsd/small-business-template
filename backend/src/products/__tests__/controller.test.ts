@@ -90,14 +90,18 @@ describe('Product Controller', () => {
         categoryId: p.categoryId as any,
         category: (p.categoryId as any).name
       }));
+      const mockData = {
+        products: newProducts,
+        total: 10,
+      }
 
       const res = mockResponse();
-      vi.spyOn(productService, 'getProducts').mockResolvedValue(newProducts);      
+      vi.spyOn(productService, 'getProducts').mockResolvedValue(mockData);      
 
       await productController.getProducts(req, res, next);
 
       expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith(newProducts);
+      expect(res.json).toHaveBeenCalledWith(mockData);
     });
   });
 
@@ -107,15 +111,19 @@ describe('Product Controller', () => {
         ...p,
         categoryId: p.categoryId as any,
       }));
+      const mockData = {
+        products: newProducts,
+        total: 10,
+      }
       const req = { params: { category: "Electronics" } } as any;      
       const res = mockResponse();
-      vi.spyOn(productService, 'getProducts').mockResolvedValue(newProducts);
+      vi.spyOn(productService, 'getProducts').mockResolvedValue(mockData);
       
 
       await productController.getProducts(req, res, next);
 
       expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith(newProducts);
+      expect(res.json).toHaveBeenCalledWith(mockData);
     });
   });
 

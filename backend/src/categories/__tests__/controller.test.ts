@@ -51,15 +51,20 @@ describe('Category Controller', () => {
 
   describe('Get Categories', async () => {
     it('should return 200', async () => {
-      const newCategorys = testICategorys;
-      req.body = newCategorys;
+      const newCategories = testICategorys;
+      req.body = newCategories;
       const res = mockResponse();
-      vi.spyOn(categoryService, 'getCategories').mockResolvedValue(newCategorys);
+
+      const mockData = {
+        categories: newCategories,
+        total: 10
+      }
+      vi.spyOn(categoryService, 'getCategories').mockResolvedValue(mockData);
 
       await categoryController.getCategories(req, res, next);
 
       expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith(newCategorys);
+      expect(res.json).toHaveBeenCalledWith(mockData);
     });
   });
 

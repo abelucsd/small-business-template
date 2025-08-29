@@ -51,26 +51,32 @@ describe('Product Service', () => {
     it('Should return all the Products', async () => {
       const newProducts: ProductResponse[] = testProducts.map(p => ({
         ...p,
-        categoryId: p.categoryId as any,
-      }));          
+        categoryId: p.categoryId as any,        
+      }));
+      const mockTotal = 10;
       
       vi.spyOn(productRepository, 'getProducts').mockResolvedValue(newProducts);
+      vi.spyOn(productRepository, 'countProductDocuments').mockResolvedValue(mockTotal);
 
-      const products = await productService.getProducts();
+      const {products, total} = await productService.getProducts();
 
       expect(products).toEqual(newProducts);
+      expect(total).toEqual(mockTotal);
     });
   });
 
   describe('Get Products', () => {
     it('Should return all the Products', async () => {
       const newProducts: IProduct[] = testProducts;
+      const mockTotal = 10;
       
       vi.spyOn(productRepository, 'getFeaturedProducts').mockResolvedValue(testProducts);
+      vi.spyOn(productRepository, 'countProductDocuments').mockResolvedValue(mockTotal);
 
-      const products = await productService.getProducts();
+      const {products, total} = await productService.getProducts();
 
       expect(products).toEqual(newProducts);
+      expect(total).toEqual(mockTotal);
     });
   });
 

@@ -1,4 +1,4 @@
-import type { Types } from "mongoose";
+import type { FilterQuery, Types } from "mongoose";
 import type { CreateCategory, ICategory } from "./model.js"
 import { Category } from "./model.js";
 
@@ -7,10 +7,19 @@ export const createCategory = async(categoryData: CreateCategory): Promise<ICate
   return category;
 };
 
-export const getCategories = async (): Promise<ICategory[]> => {
-  const categories = await Category.find({});
+export const getCategories = async (query: FilterQuery<ICategory>, skip: number, limit: number): Promise<ICategory[]> => {
+  const categories = await Category.find(query)
+    .skip(skip)
+    .limit(limit)
+    .exec();
+  
   return categories;
 };
+
+export const countCategoryDocuments = async (query: FilterQuery<ICategory>): Promise<number> => {
+  const total = await Category.countDocuments(query);
+  return total;
+}
 
 export const getCategoryById = async (_id: Types.ObjectId): Promise<ICategory | null> => {
   const category = await Category.findById(_id);
