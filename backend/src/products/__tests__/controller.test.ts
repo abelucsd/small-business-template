@@ -5,6 +5,7 @@ import * as productController from '../controller.js';
 import * as productService from '../service.js';
 import { Types } from 'mongoose';
 import { ICategory } from '../../categories/model.js';
+import type { ProductResponse } from '../types.js';
 import * as categoryService from '../../categories/service.js';
 
 import { getCategoryByName } from '../../categories/service.js';
@@ -82,14 +83,51 @@ describe('Product Controller', () => {
     });
   });
 
-  describe('Get Categories', async () => {
+  describe('Get Products', async () => {
+    it('should return 200', async () => {
+      const newProducts: ProductResponse[] = testProducts.map(p => ({
+        ...p,
+        categoryId: p.categoryId as any,
+        category: (p.categoryId as any).name
+      }));
+
+      const res = mockResponse();
+      vi.spyOn(productService, 'getProducts').mockResolvedValue(newProducts);      
+
+      await productController.getProducts(req, res, next);
+
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith(newProducts);
+    });
+  });
+
+  describe('Get Products with category', async () => {
+    it('should return 200', async () => {      
+      const newProducts: ProductResponse[] = testProducts.map(p => ({
+        ...p,
+        categoryId: p.categoryId as any,
+      }));
+      const req = { params: { category: "Electronics" } } as any;      
+      const res = mockResponse();
+      vi.spyOn(productService, 'getProducts').mockResolvedValue(newProducts);
+      
+
+      await productController.getProducts(req, res, next);
+
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith(newProducts);
+    });
+  });
+
+
+  describe('Get Featured Products', async () => {
     it('should return 200', async () => {
       const newProducts = testProducts;
       req.body = newProducts;
       const res = mockResponse();
-      vi.spyOn(productService, 'getProducts').mockResolvedValue(newProducts);
+      vi.spyOn(productService, 'getFeaturedProducts').mockResolvedValue(newProducts);
 
-      await productController.getProducts(req, res, next);
+      await productController.getFeaturedProducts(req, res, next);
 
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith(newProducts);

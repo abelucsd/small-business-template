@@ -5,6 +5,7 @@ import * as productService from '../service.js';
 import * as counterService from '../../shared/counter.model.js';
 import * as productRepository from '../repository.js';
 import { ObjectId, Types } from 'mongoose';
+import { ProductResponse } from '../types.js';
 
 
 describe('Product Service', () => {
@@ -47,14 +48,29 @@ describe('Product Service', () => {
   });
 
   describe('Get Products', () => {
-    it('Should return all the Productss', async () => {
-      const newProducts: IProduct[] = testProducts;            
+    it('Should return all the Products', async () => {
+      const newProducts: ProductResponse[] = testProducts.map(p => ({
+        ...p,
+        categoryId: p.categoryId as any,
+      }));          
       
-      vi.spyOn(productRepository, 'getProducts').mockResolvedValue(testProducts);
+      vi.spyOn(productRepository, 'getProducts').mockResolvedValue(newProducts);
 
       const products = await productService.getProducts();
 
-      expect(products).toBe(newProducts);      
+      expect(products).toEqual(newProducts);
+    });
+  });
+
+  describe('Get Products', () => {
+    it('Should return all the Products', async () => {
+      const newProducts: IProduct[] = testProducts;
+      
+      vi.spyOn(productRepository, 'getFeaturedProducts').mockResolvedValue(testProducts);
+
+      const products = await productService.getProducts();
+
+      expect(products).toEqual(newProducts);
     });
   });
 
