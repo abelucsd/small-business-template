@@ -157,6 +157,21 @@ describe('Product Controller', () => {
     });
   });
 
+
+  describe('Get Featured Products', async () => {
+    it('should return 200', async () => {
+      const newProducts = testProducts;
+      req.body = newProducts;
+      const res = mockResponse();
+      vi.spyOn(productService, 'getFeaturedProducts').mockResolvedValue(newProducts);
+
+      await productController.getFeaturedProducts(req, res, next);
+
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith(newProducts);
+    });
+  });
+
   describe('Get Product by ID', async () => {
     it('should return 200', async () => {
       const newProduct = testProducts[0]!;
