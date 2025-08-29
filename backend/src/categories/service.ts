@@ -3,7 +3,7 @@ import { Category } from "./model.js";
 import { getNextId } from "../shared/counter.model.js";
 import { CustomError } from "../shared/CustomError.js";
 import { appLogger } from "../utils/logger.js";
-import type { Types } from "mongoose";
+import type { FilterQuery, Types } from "mongoose";
 import * as repository from "./repository.js"
 
 const logger = appLogger.child({ service: 'category' });
@@ -22,10 +22,23 @@ export const createCategory = async (categoryData: CreateCategory): Promise<ICat
   }
 };
 
-export const getCategories = async (): Promise<ICategory[]> => {
+export const getCategories = async (search?: string, page?: number, limit?: number): Promise<{categories: ICategory[], total: number}> => {
   try {
     logger.info(`[getCategorys] Returning Category(s).`);
-    return await repository.getCategories();
+    const query: FilterQuery<ICategory> = {}
+    if (search) {
+      query.name = {$regex: search, $options: 'i'};
+    }
+    const pageNumber = page ?? 1;
+    const perPage = limit ?? Number.MAX_SAFE_INTEGER;        
+    const skip = (pageNumber - 1) * perPage;
+
+    const [categories, total] = await Promise.all([
+      await repository.getCategories(query, skip, perPage),
+      await repository.countCategoryDocuments(query)      
+    ])
+
+    return {categories, total}
   } catch (error) {
     const err = new CustomError('Failed to fetch Categorys', 500);
     throw err;

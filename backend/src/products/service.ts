@@ -32,7 +32,7 @@ export const createProduct = async (productData: CreateProduct): Promise<IProduc
   }
 };
 
-export const getProducts = async (category?: string): Promise<ProductResponse[]> => {
+export const getProducts = async (category?: string, search?: string, page?: number, limit?: number): Promise<{products: ProductResponse[], total: number}> => {
   try {
     logger.info(`[getProducts] Returning Product(s).`);
     let categoryId: Types.ObjectId | undefined;
@@ -48,7 +48,21 @@ export const getProducts = async (category?: string): Promise<ProductResponse[]>
     const query: FilterQuery<IProduct> = {};
     if (categoryId) query.categoryId = categoryId;
 
-    return await repository.getProducts(query);
+    // search and pagination
+    if (search) {
+      query.name = {$regex: search, $options: 'i'}
+    }
+
+    const pageNumber = page ?? 1;
+    const perPage = limit ?? Number.MAX_SAFE_INTEGER;
+    const skip = (pageNumber - 1) * perPage; 
+    
+    const [products, total] = await Promise.all([
+      await repository.getProducts(query, skip, perPage),
+      await repository.countProductDocuments(query),
+    ]);
+
+    return {products, total}
   } catch (error) {
     const err = new CustomError(`Failed to fetch Products ${error}`, 500);
     throw err;

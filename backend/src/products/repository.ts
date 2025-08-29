@@ -10,11 +10,16 @@ export const createProduct = async(productData: CreateProduct): Promise<IProduct
 };
 
 
-export const getProducts = async (query: FilterQuery<IProduct>): Promise<ProductResponse[]> => {
+export const getProducts = async (query: FilterQuery<IProduct>, skip: number, limit: number): Promise<ProductResponse[]> => {
+  
+  
   const productsRaw = await Product.find(query)
+    .skip(skip)
+    .limit(limit)
     .populate("categoryId", "name")
     .lean()
     .exec();
+
     
   const products: ProductResponse[] = productsRaw.map(p => ({
     ...p,
@@ -23,6 +28,11 @@ export const getProducts = async (query: FilterQuery<IProduct>): Promise<Product
   }));
 
   return products;
+};
+
+export const countProductDocuments = async (query: FilterQuery<IProduct>): Promise<number> => {
+  const total = await Product.countDocuments(query);
+  return total;
 };
 
 export const getFeaturedProducts = async (): Promise<IProduct[]> => {

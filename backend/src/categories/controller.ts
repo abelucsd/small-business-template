@@ -24,11 +24,14 @@ export const createCategory = async( req: Request, res: Response, next: NextFunc
 export const getCategories = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     logger.info('[getCategorys] Received request to get all Category.');
+    const search = req.query?.search as string | undefined;
+    const page = parseInt(req.query?.page as string | '1');
+    const limit = parseInt(req.query?.limit as string | '10');
     
-    const categories = await categoryService.getCategories();
+    const {categories, total} = await categoryService.getCategories(search, page, limit);
 
     logger.info(`[getCategory] Successfully fetched Category(s).`);
-    res.status(200).json(categories);
+    res.status(200).json({categories, total});
   } catch (error) {        
     next(error);
   }
