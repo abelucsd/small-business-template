@@ -10,8 +10,9 @@ export const createUser = async( req: Request, res: Response, next: NextFunction
   try {
     logger.info('[createUser] Received request to create a new User.');
 
-    const { firstname, lastname, email, password } = req.body;
-    const newUser = await userService.createUser({ firstname, lastname, email, password });
+    let { firstname, lastname, email, password, role } = req.body;
+    role = role === "admin" ? "admin" : "user";    
+    const newUser = await userService.createUser({ firstname, lastname, email, password, role });
 
     logger.info(`[createProduct] Successfully created User with ID: ${newUser._id}`);
     res.status(201).json(newUser);
