@@ -11,13 +11,13 @@ export const createCustomer = async( req: Request, res: Response, next: NextFunc
   try {
     logger.info('[createCustomer] Received request to create a new Customer.');
 
-    const { firstname, lastname, email, password } = req.body;    
+    const { firstname, lastname, email, password, role } = req.body;    
 
     // get or create user.
     let user = await userService.getUserByEmail(email);    
     if (!user) {
       // create user
-      user = await userService.createUser({ firstname, lastname, email, password });
+      user = await userService.createUser({ firstname, lastname, email, password, role });
     }
         
     const newCustomer = await customerService.createCustomer({userId: user._id});
