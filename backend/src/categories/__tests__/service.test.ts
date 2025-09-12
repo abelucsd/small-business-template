@@ -42,14 +42,17 @@ describe('Category Service', () => {
 
   describe('Get Categories', () => {
     it('Should return all the Categories', async () => {
-      const newCategorys: ICategory[] = testCategories;
-      Category.find = vi.fn().mockResolvedValue(newCategorys); 
+      const newCategories: ICategory[] = testCategories;
+      Category.find = vi.fn().mockResolvedValue(newCategories);
+      const mockTotal = 10;
       
       vi.spyOn(categoryRepository, 'getCategories').mockResolvedValue(testCategories);
+      vi.spyOn(categoryRepository, 'countCategoryDocuments').mockResolvedValue(mockTotal);
 
-      const categories = await categoryService.getCategories();
+      const {categories, total} = await categoryService.getCategories();
 
-      expect(categories).toBe(newCategorys);      
+      expect(categories).toBe(newCategories);
+      expect(total).toBe(mockTotal);
     });
   });
 

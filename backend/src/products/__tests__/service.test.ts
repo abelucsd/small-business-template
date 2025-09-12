@@ -5,6 +5,7 @@ import * as productService from '../service.js';
 import * as counterService from '../../shared/counter.model.js';
 import * as productRepository from '../repository.js';
 import { ObjectId, Types } from 'mongoose';
+import { ProductResponse } from '../types.js';
 
 
 describe('Product Service', () => {
@@ -47,14 +48,35 @@ describe('Product Service', () => {
   });
 
   describe('Get Products', () => {
-    it('Should return all the Productss', async () => {
-      const newProducts: IProduct[] = testProducts;            
+    it('Should return all the Products', async () => {
+      const newProducts: ProductResponse[] = testProducts.map(p => ({
+        ...p,
+        categoryId: p.categoryId as any,        
+      }));
+      const mockTotal = 10;
       
-      vi.spyOn(productRepository, 'getProducts').mockResolvedValue(testProducts);
+      vi.spyOn(productRepository, 'getProducts').mockResolvedValue(newProducts);
+      vi.spyOn(productRepository, 'countProductDocuments').mockResolvedValue(mockTotal);
 
-      const products = await productService.getProducts();
+      const {products, total} = await productService.getProducts();
 
-      expect(products).toBe(newProducts);      
+      expect(products).toEqual(newProducts);
+      expect(total).toEqual(mockTotal);
+    });
+  });
+
+  describe('Get Products', () => {
+    it('Should return all the Products', async () => {
+      const newProducts: IProduct[] = testProducts;
+      const mockTotal = 10;
+      
+      vi.spyOn(productRepository, 'getFeaturedProducts').mockResolvedValue(testProducts);
+      vi.spyOn(productRepository, 'countProductDocuments').mockResolvedValue(mockTotal);
+
+      const {products, total} = await productService.getProducts();
+
+      expect(products).toEqual(newProducts);
+      expect(total).toEqual(mockTotal);
     });
   });
 

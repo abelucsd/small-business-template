@@ -6,7 +6,7 @@ services:
     image: backend-dev/api:1.0
     volumes:
       - ./:/app
-      - node_modules:/app/node_modules
+      # - node_modules:/app/node_modules
     ports:
       - 4000:4000
     command: npm run dev
