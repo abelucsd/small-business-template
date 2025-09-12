@@ -1,4 +1,4 @@
-import type { CreateUser, IUser } from "./model.js";
+import type { CreateUser, IUser, UserDocument } from "./model.js";
 import { User } from "./model.js";
 import { getNextId } from "../shared/counter.model.js";
 import { CustomError } from "../shared/CustomError.js";
@@ -8,7 +8,7 @@ import type { Types } from "mongoose";
 
 const logger = appLogger.child({ service: 'user' });
 
-export const createUser = async (userData: CreateUser): Promise<IUser> => {
+export const createUser = async (userData: CreateUser): Promise<UserDocument> => {
   try {    
     const nextId = await getNextId('user');
     const newUser = {...userData, id: `user-${nextId}`};
