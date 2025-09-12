@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { User, type IUser } from '../users/model.js';
+import { User, type IUser, type UserDocument } from '../users/model.js';
 const { Schema } = mongoose;
 
 interface ICounter extends Document {
@@ -48,6 +48,6 @@ export async function flushIds(modelName: string): Promise<boolean> {
   return true;
 };
 
-const modelCommandMap: {[key: string]: mongoose.Model<IUser> | undefined } = {
+const modelCommandMap: {[key: string]: mongoose.Model<UserDocument> | undefined} = {
   User,
 };
