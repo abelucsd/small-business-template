@@ -13,6 +13,7 @@ app.use(express.json());
 app.use(cors({
   origin: [      
     'https://small-business-template.vercel.app/',
+    'https://small-business-template.vercel.app',
   ],
   methods: ['GET'],
   allowedHeaders: ['Content-Type', 'Authorization'],
