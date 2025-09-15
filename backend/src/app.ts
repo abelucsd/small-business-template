@@ -10,7 +10,16 @@ import { productRouter } from './products/routes.js';
 const app = express();
 app.use(express.json());
 
-app.use(cors());
+app.use(cors({
+  origin: [      
+    'https://small-business-template.vercel.app/',
+  ],
+  methods: ['GET'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
+
+// app.use(cors());
 
 // swagger docs
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
