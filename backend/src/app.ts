@@ -6,6 +6,7 @@ import { userRouter } from './users/routes.js';
 import { customerRouter } from './customers/routes.js';
 import { categoryRouter } from './categories/routes.js';
 import { productRouter } from './products/routes.js';
+import { paymentRouter } from './payments/routes.js';
 
 const app = express();
 app.use(express.json());
@@ -30,5 +31,6 @@ app.use('/users', userRouter);
 app.use('/customers', customerRouter);
 app.use('/categories', categoryRouter);
 app.use('/products', productRouter);
+app.use('/payments', paymentRouter);
 
 export default app;

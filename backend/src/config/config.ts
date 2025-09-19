@@ -11,6 +11,7 @@ interface Config {
   port: number;
   nodeEnv: string;
   db: DBConfig;
+  stripeKey: string;
 };
 
 export const config: Config = {
@@ -19,5 +20,6 @@ export const config: Config = {
   db: {
     mongodbUri: process.env.MONGO_URI || 'mongodb://localhost:27017',
     name: process.env.DB_NAME || 'test',
-  }
+  },
+  stripeKey: process.env.STRIPE_SECRET_KEY || '',
 };
