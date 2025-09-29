@@ -3,9 +3,7 @@ import path from 'path';
 import winston from 'winston';
 
 const logDir = path.resolve('logs');
-if (!fs.existsSync(logDir)) {
-  fs.mkdirSync(logDir);
-}
+fs.mkdirSync(logDir, { recursive: true });
 
 const logFilePath = path.join(logDir, 'combined.log');
 const errorFilePath = path.join(logDir, 'error.log');
