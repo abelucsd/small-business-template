@@ -40,14 +40,16 @@ export const getProducts = async (req: Request, res: Response, next: NextFunctio
   try {
     logger.info('[getProducts] Received request to get all Product.');
 
-    const category = req.query?.category as string | undefined;
+    const categoryIdString = req.query?.filter as string | undefined;
     const search = req.query?.search as string | undefined;
     const page = parseInt(req.query?.page as string ?? '1');
-    const limit = parseInt(req.query?.limit as string ?? '10');
+    const limit = parseInt(req.query?.limit as string ?? '10');    
 
-    console.log(category)
+    const categoryId = categoryIdString ? new Types.ObjectId(categoryIdString) : undefined;
+
+    console.log(categoryId);
     
-    const { products, total } = await productService.getProducts(category, search, page, limit);    
+    const { products, total } = await productService.getProducts(categoryId, search, page, limit);    
 
     logger.info(`[getProduct] Successfully fetched Product(s).`);
     res.status(200).json({ products, total });

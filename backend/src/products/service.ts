@@ -32,19 +32,16 @@ export const createProduct = async (productData: CreateProduct): Promise<IProduc
   }
 };
 
-export const getProducts = async (category?: string, search?: string, page?: number, limit?: number): Promise<{products: ProductResponse[], total: number}> => {
+export const getProducts = async (categoryId?: Types.ObjectId, search?: string, page?: number, limit?: number): Promise<{products: ProductResponse[], total: number}> => {
   try {
     logger.info(`[getProducts] Returning Product(s).`);
-    let categoryId: Types.ObjectId | undefined;
 
-    let categoryObject: ICategory | undefined;
-    if (category) {
-      logger.info(`[getProducts] Product category ${category}.`)
-      const categoryObject = await categoryService.getCategoryByName(category);
-      
-      if(!categoryObject) throw new Error("Category not found");      
-      categoryId = categoryObject._id;
+    if (categoryId) {
+      logger.info(`[getProducts] Check if category id exists ${categoryId}.`);
+
+      await categoryService.getCategoryById(categoryId);
     }
+     
     const query: FilterQuery<IProduct> = {};
     if (categoryId) query.categoryId = categoryId;
 
